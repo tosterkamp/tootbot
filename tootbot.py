@@ -49,7 +49,8 @@ if source[:4] == 'http':
     d = feedparser.parse(source)
     twitter = None
 else:
-    d = feedparser.parse('http://twitrss.me/twitter_user_to_rss/?user='+source, request_headers={'Cache-control': 'max-age=0'})
+    #d = feedparser.parse('http://twitrss.me/twitter_user_to_rss/?user='+source, request_headers={'Cache-control': 'max-age=0'})
+    d = feedparser.parse('http://twitrss.me/twitter_user_to_rss/?user='+source+'&fetch=Fetch+RSS', request_headers={'Cache-control': 'max-age=0'})
     twitter = source
 
 for t in reversed(d.entries):
