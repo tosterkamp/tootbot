@@ -91,7 +91,13 @@ for t in reversed(d.entries):
 
         c = t.title
         if twitter and t.author.lower() != ('(@%s)' % twitter).lower():
-            c = ("RT https://twitter.com/%s\n" % t.author[2:-1]) + c
+            c = ("RT @%s\n" % t.author[2:-1]) + c
+
+        # change @bla to @bla@twitter.com
+        result_at = re.findall(r"\@\w+", c)
+        for ra in result_at:
+            c = c.replace(ra, ra + "@twitter.com")
+
         toot_media = []
         # get the pictures...
         for p in re.finditer(r"https://pbs.twimg.com/[^ \xa0\"]*", t.summary):
@@ -126,7 +132,7 @@ for t in reversed(d.entries):
             toot = mastodon_api.status_post(c, in_reply_to_id=None,
                                             media_ids=toot_media,
                                             sensitive=False,
-                                            visibility='public',
+                                            visibility='unlisted',
                                             spoiler_text=None)
             if "id" in toot:
                 db.execute("INSERT INTO tweets VALUES ( ? , ? , ? , ? , ? )",
